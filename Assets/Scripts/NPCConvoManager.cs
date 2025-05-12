@@ -9,16 +9,19 @@ public class NPCConvoManager : MonoBehaviour
     public NPCController receiverNPC;
     private string receiverResponse;
 
-    private void Awake() {        
+    private void Awake()
+    {
         FormatReceiver();
     }
 
-    protected void ToggleUserInput(bool status) {
+    protected void ToggleUserInput(bool status)
+    {
         starterNPC.listenerModule.ToggleDictation(status);
         receiverNPC.listenerModule.ToggleDictation(status);
     }
 
-    private void Update() {
+    private void Update()
+    {
         ToggleUserInput(false); // for now, no listening from user
     }
 
@@ -26,7 +29,7 @@ public class NPCConvoManager : MonoBehaviour
     void Start()
     {
         starterResponse = $"Hello, my name is {starterNPC.thinkerModule.Personality.Name}. My bio is as follows {starterNPC.thinkerModule.Personality.Description}. What would you like to discuss? Ask a question or share a thought.";
-        
+
         starterNPC.thinkerModule.OnChatGPTInputReceived += SaveStarterResponse;
         starterNPC.speakerModule.AudioManager.OnTalkingComplete += StarterFinishedSpeaking;
 
@@ -34,34 +37,40 @@ public class NPCConvoManager : MonoBehaviour
         receiverNPC.speakerModule.AudioManager.OnTalkingComplete += ReceiverFinishedSpeaking;
     }
 
-    public void FormatReceiver() {
+    public void FormatReceiver()
+    {
         receiverNPC.gameObject.GetComponentInChildren<Collider>().isTrigger = false;
     }
 
-    private void StarterFinishedSpeaking() {
+    private void StarterFinishedSpeaking()
+    {
         receiverNPC.motionControllerModule.SetAnimatorThinking();
         receiverNPC.speakerModule.AudioManager.PlayStallClip();
         receiverNPC.thinkerModule.GenerateResponse(starterResponse);
     }
 
-    private void ReceiverFinishedSpeaking() {
+    private void ReceiverFinishedSpeaking()
+    {
         starterNPC.motionControllerModule.SetAnimatorThinking();
         starterNPC.speakerModule.AudioManager.PlayStallClip();
         starterNPC.thinkerModule.GenerateResponse(receiverResponse);
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         starterNPC.thinkerModule.OnChatGPTInputReceived -= SaveStarterResponse;
         starterNPC.speakerModule.AudioManager.OnTalkingComplete -= StarterFinishedSpeaking;
         receiverNPC.thinkerModule.OnChatGPTInputReceived -= SaveReceiverResponse;
         receiverNPC.speakerModule.AudioManager.OnTalkingComplete -= ReceiverFinishedSpeaking;
     }
 
-    public void SaveStarterResponse(string response) {
+    public void SaveStarterResponse(string response)
+    {
         starterResponse = response;
     }
 
-    public void SaveReceiverResponse(string response) {
+    public void SaveReceiverResponse(string response)
+    {
         receiverResponse = response;
     }
 
